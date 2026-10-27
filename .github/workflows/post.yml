@@ -1,0 +1,58 @@
+name: Reels Poster
+
+on:
+  schedule:
+    # Tiap jam menit ke-7 (UTC). Script yang menentukan akun mana yang jatuh tempo (jam WIB).
+    - cron: "7 * * * *"
+  workflow_dispatch:
+    inputs:
+      account:
+        description: "Nama akun (kosong = semua sesuai jadwal)"
+        required: false
+        default: ""
+      platform:
+        description: "fb / ig / kosong = dua-duanya"
+        required: false
+        default: ""
+      force:
+        description: "Paksa posting sekarang (abaikan jadwal)"
+        type: boolean
+        default: false
+
+concurrency:
+  group: reels-poster
+  cancel-in-progress: false
+
+jobs:
+  post:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq ffmpeg fonts-dejavu-core > /dev/null
+          pip install -q -r requirements.txt
+
+      - name: Post
+        env:
+          GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
+          FB_PAGE_TOKEN_GIRLSITT: ${{ secrets.FB_PAGE_TOKEN_GIRLSITT }}
+          FB_PAGE_TOKEN_AKUN2: ${{ secrets.FB_PAGE_TOKEN_AKUN2 }}
+          FB_PAGE_TOKEN_AKUN3: ${{ secrets.FB_PAGE_TOKEN_AKUN3 }}
+          FB_PAGE_TOKEN_AKUN4: ${{ secrets.FB_PAGE_TOKEN_AKUN4 }}
+          FB_PAGE_TOKEN_AKUN5: ${{ secrets.FB_PAGE_TOKEN_AKUN5 }}
+          FB_PAGE_TOKEN_AKUN6: ${{ secrets.FB_PAGE_TOKEN_AKUN6 }}
+        run: |
+          ARGS=""
+          [ -n "${{ inputs.account }}" ]  && ARGS="$ARGS --account ${{ inputs.account }}"
+          [ -n "${{ inputs.platform }}" ] && ARGS="$ARGS --platform ${{ inputs.platform }}"
+          [ "${{ inputs.force }}" = "true" ] && ARGS="$ARGS --force"
+          python poster.py $ARGS
