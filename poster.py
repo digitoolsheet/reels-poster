@@ -95,9 +95,14 @@ class Queue:
         t_key = KEYS[plat][2]
         return sum(1 for r in self.rows if self.get(r, t_key).startswith(today))
 
+    def is_ai(self, row):
+        return self.get(row, "ai").lower() in ("ya", "yes", "y")
+
     def pick(self, plat):
+        """FB: baris belum diposting yang punya link + caption FB.
+           IG: baris yang sudah 'posted' di FB tapi belum di IG."""
         for n, r in enumerate(self.rows, start=2):
-            if self.get(r, "ai").lower() in ("ya", "yes", "y") or not self.get(r, "drive"):
+            if not self.get(r, "drive"):
                 continue
             if plat == "fb":
                 if not self.get(r, "st_fb") and self.get(r, "link") and self.get(r, "cap_fb"):
@@ -184,10 +189,12 @@ def post_fb(page_id, token, path, caption):
     return vid
 
 
-def post_ig(ig_id, token, path, caption):
-    r = requests.post(f"{BASE}/{ig_id}/media", timeout=60, data={
-        "media_type": "REELS", "upload_type": "resumable", "caption": caption,
-        "share_to_feed": "true", "access_token": token})
+def post_ig(ig_id, token, path, caption, is_ai=False):
+    data = {"media_type": "REELS", "upload_type": "resumable", "caption": caption,
+            "share_to_feed": "true", "access_token": token}
+    if is_ai:
+        data["is_ai_generated"] = "true"  # label "AI info" (Instagram Content Publishing API)
+    r = requests.post(f"{BASE}/{ig_id}/media", timeout=60, data=data)
     if not r.ok:
         raise RuntimeError(f"IG container gagal: {r.text[:200]}")
     cid = r.json()["id"]
@@ -208,6 +215,31 @@ def post_ig(ig_id, token, path, caption):
     if not r.ok:
         raise RuntimeError(f"IG publish gagal: {r.text[:200]}")
     return r.json()["id"]
+
+
+# ======================= Konten AI =======================
+# FB Page API belum punya parameter label AI, jadi untuk FB:
+#   1) pengungkapan tertulis di caption, 2) metadata standar IPTC di file video
+#      (sinyal yang dipakai Meta untuk memasang label "AI info" otomatis — best effort).
+# IG memakai parameter resmi is_ai_generated=true.
+
+DEFAULT_AI_TEXT = "🤖 AI-generated video"
+IPTC_AI = "http://cv.iptc.org/newscodes/digitalsourcetype/trainedAlgorithmicMedia"
+
+
+def add_ai_disclosure(caption, text):
+    if not text or text.lower() in caption.lower():
+        return caption
+    lines = caption.split("\n", 1)  # link tetap di baris pertama
+    return lines[0] + "\n" + text + ("\n" + lines[1] if len(lines) > 1 else "")
+
+
+def tag_ai_metadata(path):
+    if not shutil.which("exiftool"):
+        return
+    subprocess.run(["exiftool", "-overwrite_original", "-q",
+                    f"-XMP-iptcExt:DigitalSourceType={IPTC_AI}", path],
+                   capture_output=True)
 
 
 # ======================= Runner =======================
@@ -241,10 +273,16 @@ def run_one(acc, cfg, plat, sheets, drive, force=False):
         raw = os.path.join(tmp, "raw.mp4")
         download(drive, q.get(row, "drive"), raw)
         video = differentiate(raw, os.path.join(tmp, "out.mp4"), cfg.get("watermark", ""))
+        ai = bool(cfg.get("all_ai")) or q.is_ai(row)
+        if ai:
+            tag_ai_metadata(video)
         if plat == "fb":
-            mid = post_fb(cfg["fb_page_id"], token, video, q.get(row, "cap_fb"))
+            cap = q.get(row, "cap_fb")
+            if ai:
+                cap = add_ai_disclosure(cap, cfg.get("ai_disclosure", DEFAULT_AI_TEXT))
+            mid = post_fb(cfg["fb_page_id"], token, video, cap)
         else:
-            mid = post_ig(cfg["ig_user_id"], token, video, q.get(row, "cap_ig"))
+            mid = post_ig(cfg["ig_user_id"], token, video, q.get(row, "cap_ig"), ai)
         q.write(row_no, {st_k: "posted", id_k: mid,
                          t_k: datetime.now(TZ).strftime("%Y-%m-%d %H:%M")})
         log(acc, plat, f"posted (baris {row_no})")
