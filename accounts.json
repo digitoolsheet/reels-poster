@@ -1,0 +1,62 @@
+{
+  "girlsitt": {
+    "enabled": true,
+    "fb_page_id": "1415131131677023",
+    "ig_user_id": "17841421556820419",
+    "queue_sheet_id": "1a5KGH40h0b7GgdEsugxpLJ5PY-Dxw6uT4wMFapEeGDI",
+    "queue_tab": "queue",
+    "watermark": "girlsitt.sg",
+    "fb_hours": [11],
+    "ig_hours": [19]
+  },
+  "akun2": {
+    "enabled": false,
+    "fb_page_id": "",
+    "ig_user_id": "",
+    "queue_sheet_id": "",
+    "queue_tab": "queue",
+    "watermark": "",
+    "fb_hours": [12],
+    "ig_hours": [20]
+  },
+  "akun3": {
+    "enabled": false,
+    "fb_page_id": "",
+    "ig_user_id": "",
+    "queue_sheet_id": "",
+    "queue_tab": "queue",
+    "watermark": "",
+    "fb_hours": [11],
+    "ig_hours": [20]
+  },
+  "akun4": {
+    "enabled": false,
+    "fb_page_id": "",
+    "ig_user_id": "",
+    "queue_sheet_id": "",
+    "queue_tab": "queue",
+    "watermark": "",
+    "fb_hours": [12],
+    "ig_hours": [19]
+  },
+  "akun5": {
+    "enabled": false,
+    "fb_page_id": "",
+    "ig_user_id": "",
+    "queue_sheet_id": "",
+    "queue_tab": "queue",
+    "watermark": "",
+    "fb_hours": [13],
+    "ig_hours": [21]
+  },
+  "akun6": {
+    "enabled": false,
+    "fb_page_id": "",
+    "ig_user_id": "",
+    "queue_sheet_id": "",
+    "queue_tab": "queue",
+    "watermark": "",
+    "fb_hours": [11],
+    "ig_hours": [21]
+  }
+}
