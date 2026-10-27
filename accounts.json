@@ -6,8 +6,15 @@
     "queue_sheet_id": "1a5KGH40h0b7GgdEsugxpLJ5PY-Dxw6uT4wMFapEeGDI",
     "queue_tab": "queue",
     "watermark": "girlsitt.sg",
-    "fb_hours": [11],
-    "ig_hours": [19]
+    "fb_hours": [
+      11,
+      17,
+      20
+    ],
+    "ig_hours": [
+      13,
+      21
+    ]
   },
   "akun2": {
     "enabled": false,
@@ -16,8 +23,15 @@
     "queue_sheet_id": "",
     "queue_tab": "queue",
     "watermark": "",
-    "fb_hours": [12],
-    "ig_hours": [20]
+    "fb_hours": [
+      12,
+      18,
+      21
+    ],
+    "ig_hours": [
+      14,
+      22
+    ]
   },
   "akun3": {
     "enabled": false,
@@ -26,8 +40,15 @@
     "queue_sheet_id": "",
     "queue_tab": "queue",
     "watermark": "",
-    "fb_hours": [11],
-    "ig_hours": [20]
+    "fb_hours": [
+      11,
+      16,
+      20
+    ],
+    "ig_hours": [
+      13,
+      21
+    ]
   },
   "akun4": {
     "enabled": false,
@@ -36,8 +57,15 @@
     "queue_sheet_id": "",
     "queue_tab": "queue",
     "watermark": "",
-    "fb_hours": [12],
-    "ig_hours": [19]
+    "fb_hours": [
+      12,
+      17,
+      21
+    ],
+    "ig_hours": [
+      14,
+      22
+    ]
   },
   "akun5": {
     "enabled": false,
@@ -46,8 +74,15 @@
     "queue_sheet_id": "",
     "queue_tab": "queue",
     "watermark": "",
-    "fb_hours": [13],
-    "ig_hours": [21]
+    "fb_hours": [
+      13,
+      18,
+      20
+    ],
+    "ig_hours": [
+      15,
+      22
+    ]
   },
   "akun6": {
     "enabled": false,
@@ -56,7 +91,14 @@
     "queue_sheet_id": "",
     "queue_tab": "queue",
     "watermark": "",
-    "fb_hours": [11],
-    "ig_hours": [21]
+    "fb_hours": [
+      11,
+      18,
+      21
+    ],
+    "ig_hours": [
+      13,
+      22
+    ]
   }
 }
