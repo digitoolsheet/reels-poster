@@ -189,12 +189,19 @@ def post_fb(page_id, token, path, caption):
     return vid
 
 
-def post_ig(ig_id, token, path, caption, is_ai=False):
+def post_ig(ig_id, token, path, caption, is_ai=False, location_id=""):
     data = {"media_type": "REELS", "upload_type": "resumable", "caption": caption,
             "share_to_feed": "true", "access_token": token}
     if is_ai:
         data["is_ai_generated"] = "true"  # label "AI info" (Instagram Content Publishing API)
+    if location_id:
+        data["location_id"] = location_id  # tag lokasi (ID Page lokasi, mis. Singapore)
     r = requests.post(f"{BASE}/{ig_id}/media", timeout=60, data=data)
+    if not r.ok and location_id:
+        # ID lokasi tidak valid -> tetap posting tanpa tag lokasi
+        print(f"  tag lokasi ditolak, posting tanpa lokasi: {r.text[:120]}", flush=True)
+        data.pop("location_id", None)
+        r = requests.post(f"{BASE}/{ig_id}/media", timeout=60, data=data)
     if not r.ok:
         raise RuntimeError(f"IG container gagal: {r.text[:200]}")
     cid = r.json()["id"]
@@ -282,7 +289,8 @@ def run_one(acc, cfg, plat, sheets, drive, force=False):
                 cap = add_ai_disclosure(cap, cfg.get("ai_disclosure", DEFAULT_AI_TEXT))
             mid = post_fb(cfg["fb_page_id"], token, video, cap)
         else:
-            mid = post_ig(cfg["ig_user_id"], token, video, q.get(row, "cap_ig"), ai)
+            mid = post_ig(cfg["ig_user_id"], token, video, q.get(row, "cap_ig"), ai,
+                          str(cfg.get("ig_location_id", "") or ""))
         q.write(row_no, {st_k: "posted", id_k: mid,
                          t_k: datetime.now(TZ).strftime("%Y-%m-%d %H:%M")})
         log(acc, plat, f"posted (baris {row_no})")
