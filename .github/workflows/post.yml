@@ -13,6 +13,8 @@ on:
         options:
           - semua
           - girlsitt
+          - rusticmart
+          - webee
       platform:
         description: "Platform"
         type: choice
@@ -52,8 +54,8 @@ jobs:
         env:
           GOOGLE_SERVICE_ACCOUNT_JSON: ${{ secrets.GOOGLE_SERVICE_ACCOUNT_JSON }}
           FB_PAGE_TOKEN_GIRLSITT: ${{ secrets.FB_PAGE_TOKEN_GIRLSITT }}
-          FB_PAGE_TOKEN_AKUN2: ${{ secrets.FB_PAGE_TOKEN_AKUN2 }}
-          FB_PAGE_TOKEN_AKUN3: ${{ secrets.FB_PAGE_TOKEN_AKUN3 }}
+          FB_PAGE_TOKEN_RUSTICMART: ${{ secrets.FB_PAGE_TOKEN_RUSTICMART }}
+          FB_PAGE_TOKEN_WEBEE: ${{ secrets.FB_PAGE_TOKEN_WEBEE }}
           FB_PAGE_TOKEN_AKUN4: ${{ secrets.FB_PAGE_TOKEN_AKUN4 }}
           FB_PAGE_TOKEN_AKUN5: ${{ secrets.FB_PAGE_TOKEN_AKUN5 }}
           FB_PAGE_TOKEN_AKUN6: ${{ secrets.FB_PAGE_TOKEN_AKUN6 }}
